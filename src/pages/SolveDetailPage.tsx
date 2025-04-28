@@ -421,12 +421,12 @@ export const SolveDetailPage = () => {
             )}
             
             {/* Solve Parameters */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            {/* <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-xl font-semibold mb-4">Solver Parameters</h2>
               <pre className="bg-gray-50 p-4 rounded-md overflow-x-auto text-sm">
                 {JSON.stringify(solve.parameters, null, 2)}
               </pre>
-            </div>
+            </div> */}
           </div>
         ) : (
           <div className="bg-gray-50 rounded-lg p-8 text-center">

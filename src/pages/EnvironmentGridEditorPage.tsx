@@ -554,7 +554,7 @@ export const EnvironmentGridEditorPage = () => {
                       className="input w-full"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="e.g., Warehouse Environment"
+                      placeholder="Name of this environment"
                       required
                     />
                   </div>
@@ -568,7 +568,7 @@ export const EnvironmentGridEditorPage = () => {
                       className="input w-full h-24"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      placeholder="Optional description of this environment"
+                      placeholder="Description of this environment"
                     />
                   </div>
                 </div>

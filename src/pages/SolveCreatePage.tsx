@@ -257,7 +257,7 @@ export const SolveCreatePage = () => {
                   className="input w-full"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g., Warehouse Optimization Run 1"
+                  placeholder="Name of this solve run"
                   required
                 />
               </div>
@@ -271,7 +271,7 @@ export const SolveCreatePage = () => {
                   className="input w-full h-24"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Optional description of this solve run"
+                  placeholder="Description of this solve run"
                 />
               </div>
               
@@ -299,7 +299,7 @@ export const SolveCreatePage = () => {
                   </select>
                 </div>
                 
-                <div>
+                {/* <div>
                   <label htmlFor="time-limit" className="block text-sm font-medium text-gray-700 mb-1">
                     Time Limit (seconds)
                   </label>
@@ -315,7 +315,7 @@ export const SolveCreatePage = () => {
                   <p className="mt-1 text-xs text-gray-500">
                     Maximum duration for optimization (10 sec - 1 hour)
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
             

@@ -15,7 +15,7 @@ export const TaskGeneratePage = () => {
   
   const [scenarioId, setScenarioId] = useState<number | ''>('');
   const [numTasks, setNumTasks] = useState(5);
-  const [taskType, setTaskType] = useState<TaskType | ''>('pickup');
+  const [taskType, setTaskType] = useState<TaskType | ''>('pickup_delivery');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
 
@@ -183,7 +183,7 @@ export const TaskGeneratePage = () => {
               
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Task Name Prefix (Optional)
+                  Task Name
                 </label>
                 <input
                   type="text"
@@ -191,23 +191,23 @@ export const TaskGeneratePage = () => {
                   className="input w-full"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g., Warehouse Pickup Task"
+                  placeholder="Name of the generated tasks"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                {/* <p className="mt-1 text-xs text-gray-500">
                   Will be used as a prefix for all generated tasks. A number will be appended to each task.
-                </p>
+                </p> */}
               </div>
               
               <div>
                 <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                  Task Description (Optional)
+                  Task Description
                 </label>
                 <textarea
                   id="description"
                   className="input w-full h-24"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Common description for all generated tasks"
+                  placeholder="Common description for the generated tasks"
                 />
               </div>
               
@@ -229,7 +229,7 @@ export const TaskGeneratePage = () => {
                 
                 <div>
                   <label htmlFor="task-type" className="block text-sm font-medium text-gray-700 mb-1">
-                    Task Type (Optional)
+                    Task Type
                   </label>
                   <select
                     id="task-type"
@@ -237,9 +237,9 @@ export const TaskGeneratePage = () => {
                     value={taskType}
                     onChange={(e) => setTaskType(e.target.value as TaskType | '')}
                   >
-                    <option value="">Any Type</option>
-                    <option value="pickup">Pickup</option>
-                    <option value="delivery">Delivery</option>
+                    {/* <option value="">Any Type</option> */}
+                    {/* <option value="pickup">Pickup</option> */}
+                    {/* <option value="delivery">Delivery</option> */}
                     <option value="pickup_delivery">Pickup & Delivery</option>
                   </select>
                 </div>

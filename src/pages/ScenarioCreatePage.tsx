@@ -156,7 +156,7 @@ export const ScenarioCreatePage = () => {
                   className="input w-full"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g., Warehouse Scenario Alpha"
+                  placeholder="Name of this scenario"
                   required
                 />
               </div>
@@ -170,11 +170,11 @@ export const ScenarioCreatePage = () => {
                   className="input w-full h-24"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Optional description of this scenario"
+                  placeholder="Description of this scenario"
                 />
               </div>
               
-              <div>
+              {/* <div>
                 <label htmlFor="parameters" className="block text-sm font-medium text-gray-700 mb-1">
                   Parameters (JSON)
                 </label>
@@ -199,7 +199,7 @@ export const ScenarioCreatePage = () => {
                 <p className="mt-1 text-xs text-gray-500">
                   Enter scenario-specific parameters in JSON format. Leave blank if not needed.
                 </p>
-              </div>
+              </div> */}
             </div>
             
             <div className="flex justify-end space-x-3">

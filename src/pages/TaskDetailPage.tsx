@@ -164,12 +164,12 @@ export const TaskDetailPage = () => {
                   <p className="text-sm text-gray-500 mb-1">Type</p>
                   <p className="text-lg">{getTaskTypeLabel(task.task_type)}</p>
                 </div>
-                <div>
+                {/* <div>
                   <p className="text-sm text-gray-500 mb-1">Priority</p>
                   <p className="text-lg">
                     {task.details?.priority ? getPriorityLabel(task.details.priority) : 'Normal'}
                   </p>
-                </div>
+                </div> */}
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Scenario</p>
                   <p className="text-lg">
@@ -282,11 +282,11 @@ export const TaskDetailPage = () => {
                     >
                       {showGraph ? 'Hide Graph' : 'Show Graph'}
                     </button>
-                    {showGraph && (
+                    {/* {showGraph && (
                       <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
                         Showing navigation graph
                       </span>
-                    )}
+                    )} */}
                   </div>
                 </div>
                 <div 

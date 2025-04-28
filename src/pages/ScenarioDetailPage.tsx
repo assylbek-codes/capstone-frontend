@@ -124,9 +124,9 @@ export const ScenarioDetailPage = () => {
             <Link to={`/tasks/generate?scenario_id=${id}`} className="btn btn-primary">
               Generate Tasks
             </Link>
-            <Link to={`/solves/create?scenario_id=${id}`} className="btn btn-secondary">
+            {/* <Link to={`/solves/create?scenario_id=${id}`} className="btn btn-secondary">
               Create Solve
-            </Link>
+            </Link> */}
             <button 
               onClick={handleDelete}
               className="btn btn-outline btn-danger"
@@ -174,7 +174,7 @@ export const ScenarioDetailPage = () => {
             </div>
             
             {/* Scenario parameters */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            {/* <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-xl font-semibold mb-4">Parameters</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
@@ -190,7 +190,7 @@ export const ScenarioDetailPage = () => {
                   <p className="text-lg">{new Date(scenario.created_at).toLocaleDateString()}</p>
                 </div>
               </div>
-            </div>
+            </div> */}
             
             {/* Environment Visualization */}
             {environment && (
@@ -205,11 +205,11 @@ export const ScenarioDetailPage = () => {
                     >
                       {showGraph ? 'Hide Graph' : 'Show Graph'}
                     </button>
-                    {showGraph && (
+                    {/* {showGraph && (
                       <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
                         Showing navigation graph
                       </span>
-                    )}
+                    )} */}
                   </div>
                 </div>
                 <div 
@@ -269,9 +269,9 @@ export const ScenarioDetailPage = () => {
                     No tasks have been created for this scenario yet.
                   </p>
                   <div className="flex gap-3 justify-center">
-                    <Link to={`/tasks/create?scenario_id=${id}`} className="btn btn-outline">
+                    {/* <Link to={`/tasks/create?scenario_id=${id}`} className="btn btn-outline">
                       Create Task Manually
-                    </Link>
+                    </Link> */}
                     <Link to={`/tasks/generate?scenario_id=${id}`} className="btn btn-primary">
                       Generate Tasks
                     </Link>
@@ -318,7 +318,7 @@ export const ScenarioDetailPage = () => {
             </div>
             
             {/* Solves section */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            {/* <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold">Optimizations</h2>
                 <Link to={`/solves?scenario_id=${id}`} className="text-primary hover:underline text-sm">
@@ -330,7 +330,7 @@ export const ScenarioDetailPage = () => {
                   Create New Optimization
                 </Link>
               </div>
-            </div>
+            </div> */}
           </div>
         ) : (
           <div className="bg-gray-50 rounded-lg p-8 text-center">
