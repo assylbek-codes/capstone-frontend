@@ -110,11 +110,11 @@ export const TaskDetailPage = () => {
     }
   };
 
-  const getPriorityLabel = (priority: number) => {
-    if (priority >= 8) return 'High';
-    if (priority >= 5) return 'Medium';
-    return 'Low';
-  };
+  // const getPriorityLabel = (priority: number) => {
+  //   if (priority >= 8) return 'High';
+  //   if (priority >= 5) return 'Medium';
+  //   return 'Low';
+  // };
 
   return (
     <MainLayout>

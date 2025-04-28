@@ -19,7 +19,7 @@ export const SolveCreatePage = () => {
   const [description, setDescription] = useState('');
   const [algorithmId, setAlgorithmId] = useState(1); // Default to 1
   const [algorithmType, setAlgorithmType] = useState('greedy_distance');
-  const [timeLimit, setTimeLimit] = useState(300); // 5 minutes default
+  const [timeLimit, _] = useState(300); // 5 minutes default
 
   const AlgorithmsIdMap = {
     'greedy_distance': 1,

@@ -14,8 +14,8 @@ export const ScenarioCreatePage = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [environmentId, setEnvironmentId] = useState<number | ''>('');
-  const [parameters, setParameters] = useState('');
-  const [hasParsingError, setHasParsingError] = useState(false);
+  const [parameters,] = useState('');
+  const [hasParsingError,] = useState(false);
 
   // Fetch environments on component mount
   useEffect(() => {
@@ -39,21 +39,21 @@ export const ScenarioCreatePage = () => {
     fetchEnvironments();
   }, []);
 
-  const handleParametersChange = (value: string) => {
-    setParameters(value);
+  // const handleParametersChange = (value: string) => {
+  //   setParameters(value);
     
-    // Validate JSON if not empty
-    if (value.trim()) {
-      try {
-        JSON.parse(value);
-        setHasParsingError(false);
-      } catch (e) {
-        setHasParsingError(true);
-      }
-    } else {
-      setHasParsingError(false);
-    }
-  };
+  //   // Validate JSON if not empty
+  //   if (value.trim()) {
+  //     try {
+  //       JSON.parse(value);
+  //       setHasParsingError(false);
+  //     } catch (e) {
+  //       setHasParsingError(true);
+  //     }
+  //   } else {
+  //     setHasParsingError(false);
+  //   }
+  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

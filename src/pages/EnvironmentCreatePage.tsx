@@ -5,7 +5,7 @@ import apiClient from '../api/client';
 
 export const EnvironmentCreatePage = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
   const [name, setName] = useState('');
