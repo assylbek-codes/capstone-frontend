@@ -19,9 +19,9 @@ export const DashboardPage = () => {
       try {
         // Fetch environments, scenarios, and solves in parallel
         const [environmentsRes, scenariosRes, solvesRes] = await Promise.all([
-          apiClient.get<Environment[]>('/environments'),
-          apiClient.get<Scenario[]>('/scenarios'),
-          apiClient.get<Solve[]>('/solves')
+          apiClient.get<Environment[]>('/environments/'),
+          apiClient.get<Scenario[]>('/scenarios/'),
+          apiClient.get<Solve[]>('/solves/')
         ]);
         
         setEnvironments(environmentsRes.data);
