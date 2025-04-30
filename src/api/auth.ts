@@ -11,10 +11,10 @@ interface LoginData {
   password: string;
 }
 
-interface VerifyEmailData {
-  email: string;
-  code: string;
-}
+// interface VerifyEmailData {
+//   email: string;
+//   code: string;
+// }
 
 interface AuthResponse {
   access_token: string;

@@ -23,8 +23,8 @@ export const TaskCreatePage = () => {
   const [description, setDescription] = useState('');
   const [environmentId, setEnvironmentId] = useState('');
   const [scenarioId, setScenarioId] = useState('');
-  const [params, setParams] = useState('');
-  const [hasParsingError, setHasParsingError] = useState(false);
+  const [params,] = useState('');
+  const [hasParsingError,] = useState(false);
   
   const [environments, setEnvironments] = useState<Environment[]>([]);
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
@@ -52,21 +52,21 @@ export const TaskCreatePage = () => {
     fetchData();
   }, []);
 
-  const handleParamsChange = (value: string) => {
-    setParams(value);
+  // const handleParamsChange = (value: string) => {
+  //   setParams(value);
     
-    // Validate JSON if not empty
-    if (value.trim()) {
-      try {
-        JSON.parse(value);
-        setHasParsingError(false);
-      } catch (e) {
-        setHasParsingError(true);
-      }
-    } else {
-      setHasParsingError(false);
-    }
-  };
+  //   // Validate JSON if not empty
+  //   if (value.trim()) {
+  //     try {
+  //       JSON.parse(value);
+  //       setHasParsingError(false);
+  //     } catch (e) {
+  //       setHasParsingError(true);
+  //     }
+  //   } else {
+  //     setHasParsingError(false);
+  //   }
+  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
