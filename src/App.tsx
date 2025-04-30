@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuthStore } from './stores/authStore';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
+import { VerifyEmailPage } from './pages/VerifyEmailPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { EnvironmentsPage } from './pages/EnvironmentsPage';
 import { EnvironmentCreatePage } from './pages/EnvironmentCreatePage';
@@ -37,6 +38,7 @@ function App() {
         {/* Public routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
         
         {/* Protected routes */}
         <Route path="/dashboard" element={

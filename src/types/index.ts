@@ -127,7 +127,9 @@ export interface Task {
   task_type: TaskType;
   details: TaskDetails;
   scenario_id: number;
+  environment_id: number;
   scenario?: Scenario;
+  environment?: Environment;
   created_at: string;
   updated_at: string;
 }

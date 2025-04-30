@@ -528,227 +528,249 @@ export const EnvironmentGridEditorPage = () => {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Create Environment with Grid Editor</h1>
+      <div className="min-h-full bg-gradient-to-b from-gray-900 to-gray-800 text-white relative overflow-hidden p-6 rounded-xl">
+        {/* Tech background elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-10 w-40 h-40 rounded-full bg-blue-500 blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-60 h-60 rounded-full bg-purple-500 blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-cyan-500 blur-3xl"></div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <div className="bg-red-50 text-red-500 p-4 rounded-md">
-                {error}
-              </div>
-            )}
-            
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="space-y-4">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                      Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      className="input w-full"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="Name of this environment"
-                      required
-                    />
+        {/* Grid lines for tech effect */}
+        <div className="absolute inset-0 grid grid-cols-8 z-0 opacity-5">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={`v-${i}`} className="border-r border-white h-full"></div>
+          ))}
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={`h-${i}`} className="border-b border-white w-full absolute" style={{ top: `${(i + 1) * 12.5}%` }}></div>
+          ))}
+        </div>
+        
+        <div className="relative z-1 space-y-6">
+          <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 text-transparent bg-clip-text">Create Environment with Grid Editor</h1>
+          </div>
+          
+          <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50 shadow-xl">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {error && (
+                <div className="bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-lg">
+                  {error}
+                </div>
+              )}
+              
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
+                        Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        className="w-full bg-gray-900/70 border border-gray-700 rounded-md py-2 px-4 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Name of this environment"
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-1">
+                        Description
+                      </label>
+                      <textarea
+                        id="description"
+                        className="w-full bg-gray-900/70 border border-gray-700 rounded-md py-2 px-4 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 h-24"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Description of this environment"
+                      />
+                    </div>
                   </div>
                   
-                  <div>
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                      Description
-                    </label>
-                    <textarea
-                      id="description"
-                      className="input w-full h-24"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      placeholder="Description of this environment"
-                    />
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="width" className="block text-sm font-medium text-gray-300 mb-1">
+                          Width <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          id="width"
+                          className="w-full bg-gray-900/70 border border-gray-700 rounded-md py-2 px-4 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                          value={dimensions.width}
+                          onChange={handleWidthChange}
+                          min="5"
+                          max="50"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="height" className="block text-sm font-medium text-gray-300 mb-1">
+                          Height <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          id="height"
+                          className="w-full bg-gray-900/70 border border-gray-700 rounded-md py-2 px-4 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                          value={dimensions.height}
+                          onChange={handleHeightChange}
+                          min="5"
+                          max="50"
+                          required
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4">
+                      <button
+                        type="button"
+                        className={`w-full py-2 px-4 rounded-md transition-colors ${showGraph ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-700 hover:bg-gray-600'} text-white`}
+                        onClick={toggleGraphVisualization}
+                      >
+                        {showGraph ? 'Hide Graph' : 'Show Graph'}
+                      </button>
+                    </div>
                   </div>
+
+                  {elements.robot_stations.length > 0 && (
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-medium text-gray-300 mb-2">Robot Stations</h3>
+                      <div className="max-h-80 overflow-y-auto space-y-2">
+                        {elements.robot_stations.map(station => (
+                          <div key={station.id} className="p-3 border border-gray-700 bg-gray-800/70 rounded-md">
+                            <h4 className="font-medium text-gray-200">{station.id}</h4>
+                            <p className="text-xs text-gray-400">
+                              Position: ({station.position[0]}, {station.position[1]})
+                            </p>
+                            <div className="mt-2">
+                              <label htmlFor={`robots-${station.id}`} className="block text-xs font-medium text-gray-300 mb-1">
+                                Robots
+                              </label>
+                              <input
+                                type="number"
+                                id={`robots-${station.id}`}
+                                className="w-full bg-gray-900/70 border border-gray-700 rounded-md py-1 px-2 text-white text-sm"
+                                value={robotCounts[station.id] || 1}
+                                onChange={(e) => handleRobotCountChange(station.id, parseInt(e.target.value) || 1)}
+                                min="1"
+                                max="10"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="width" className="block text-sm font-medium text-gray-700 mb-1">
-                        Width <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        id="width"
-                        className="input w-full"
-                        value={dimensions.width}
-                        onChange={handleWidthChange}
-                        min="5"
-                        max="50"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="height" className="block text-sm font-medium text-gray-700 mb-1">
-                        Height <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        id="height"
-                        className="input w-full"
-                        value={dimensions.height}
-                        onChange={handleHeightChange}
-                        min="5"
-                        max="50"
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="mt-4">
-                    <button
-                      type="button"
-                      className={`btn ${showGraph ? 'btn-primary' : 'btn-secondary'} w-full`}
-                      onClick={toggleGraphVisualization}
-                    >
-                      {showGraph ? 'Hide Graph' : 'Show Graph'}
-                    </button>
-                  </div>
+                <div className="h-[calc(100vh-320px)] min-h-[600px] border border-black rounded-lg overflow-hidden bg-gray-400/70 text-gray-900">
+                  <GridEditor 
+                    dimensions={dimensions}
+                    elements={{
+                      ...elements,
+                      // Pass all pickup points but mark which ones are selected
+                      allPickupPoints,
+                      selectedPickupIds
+                    } as any}
+                    onElementsChange={handleElementsChange}
+                    onPickupToggle={togglePickupSelection}
+                    showGraph={showGraph}
+                    graph={graph}
+                  />
                 </div>
-
-                {elements.robot_stations.length > 0 && (
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium text-gray-700 mb-2">Robot Stations</h3>
-                    <div className="max-h-80 overflow-y-auto space-y-2">
-                      {elements.robot_stations.map(station => (
-                        <div key={station.id} className="p-3 border rounded-md">
-                          <h4 className="font-medium text-gray-800">{station.id}</h4>
-                          <p className="text-xs text-gray-500">
-                            Position: ({station.position[0]}, {station.position[1]})
-                          </p>
-                          <div className="mt-2">
-                            <label htmlFor={`robots-${station.id}`} className="block text-xs font-medium text-gray-700 mb-1">
-                              Robots
-                            </label>
-                            <input
-                              type="number"
-                              id={`robots-${station.id}`}
-                              className="input w-full"
-                              value={robotCounts[station.id] || 1}
-                              onChange={(e) => handleRobotCountChange(station.id, parseInt(e.target.value) || 1)}
-                              min="1"
-                              max="10"
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
               
-              <div className="h-[calc(100vh-320px)] min-h-[600px] border rounded-lg overflow-hidden">
-                <GridEditor 
-                  dimensions={dimensions}
-                  elements={{
-                    ...elements,
-                    // Pass all pickup points but mark which ones are selected
-                    allPickupPoints,
-                    selectedPickupIds
-                  } as any}
-                  onElementsChange={handleElementsChange}
-                  onPickupToggle={togglePickupSelection}
-                  showGraph={showGraph}
-                  graph={graph}
-                />
-              </div>
-            </div>
-            
-            {/* Pickup Points Display */}
-            {allPickupPoints.length > 0 && (
-              <div className="mt-6">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-lg font-medium text-gray-700">Pickup Points</h3>
-                  <span className="text-sm text-gray-500">
-                    {selectedPickupIds.size} of {allPickupPoints.length} points selected
-                  </span>
-                </div>
-                <div className="p-4 bg-gray-50 rounded-md">
-                  <p className="text-sm text-gray-600 mb-2">
-                    Click on pickup points around shelves to select/deselect them. 
-                    Only selected pickup points will be included in the environment.
-                  </p>
-                  <div className="flex space-x-4">
-                    <button
-                      type="button"
-                      className="btn btn-xs btn-outline"
-                      onClick={() => setSelectedPickupIds(new Set(allPickupPoints.map(p => p.id)))}
-                    >
-                      Select All
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-xs btn-outline"
-                      onClick={() => setSelectedPickupIds(new Set())}
-                    >
-                      Deselect All
-                    </button>
+              {/* Pickup Points Display */}
+              {allPickupPoints.length > 0 && (
+                <div className="mt-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-lg font-medium text-gray-300">Pickup Points</h3>
+                    <span className="text-sm text-gray-400">
+                      {selectedPickupIds.size} of {allPickupPoints.length} points selected
+                    </span>
+                  </div>
+                  <div className="p-4 bg-gray-800/70 border border-gray-700/50 rounded-md">
+                    <p className="text-sm text-gray-400 mb-2">
+                      Click on pickup points around shelves to select/deselect them. 
+                      Only selected pickup points will be included in the environment.
+                    </p>
+                    <div className="flex space-x-4">
+                      <button
+                        type="button"
+                        className="bg-gray-700 hover:bg-gray-600 text-gray-300 px-3 py-1 rounded text-xs transition-colors"
+                        onClick={() => setSelectedPickupIds(new Set(allPickupPoints.map(p => p.id)))}
+                      >
+                        Select All
+                      </button>
+                      <button
+                        type="button"
+                        className="bg-gray-700 hover:bg-gray-600 text-gray-300 px-3 py-1 rounded text-xs transition-colors"
+                        onClick={() => setSelectedPickupIds(new Set())}
+                      >
+                        Deselect All
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-            
-            <div className="mt-6">
-              <button
-                type="button"
-                className="btn btn-secondary w-full"
-                onClick={generateJson}
-              >
-                Generate JSON & Graph
-              </button>
-            </div>
-            
-            {resultJson && (
-              <div className="mt-4">
-                <label htmlFor="result" className="block text-sm font-medium text-gray-700 mb-1">
-                  Environment JSON
-                </label>
-                <textarea
-                  id="result"
-                  className="input w-full h-64 font-mono"
-                  value={resultJson}
-                  readOnly
-                />
-              </div>
-            )}
-            
-            <div className="flex justify-end space-x-3">
-              <button
-                type="button"
-                className="btn btn-outline"
-                onClick={() => navigate('/environments')}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <span className="flex items-center">
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Creating...
+              )}
+              
+              {/* <div className="mt-6">
+                <button
+                  type="button"
+                  className="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md transition-colors"
+                  onClick={generateJson}
+                >
+                  Generate JSON & Graph
+                </button>
+              </div> */}
+              
+              {resultJson && (
+                <div className="mt-4">
+                  <label htmlFor="result" className="block text-sm font-medium text-gray-300 mb-1 hidden">
+                    Environment JSON
+                  </label>
+                  <textarea
+                    id="result"
+                    className="w-full bg-gray-900/70 border border-gray-700 rounded-md py-2 px-4 text-white font-mono h-64 hidden"
+                    value={resultJson}
+                    readOnly
+                  />
+                </div>
+              )}
+              
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
+                  onClick={() => navigate('/environments')}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors relative overflow-hidden group"
+                  disabled={isLoading}
+                >
+                  <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-blue-500 top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
+                  <span className="relative">
+                    {isLoading ? (
+                      <span className="flex items-center">
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Creating...
+                      </span>
+                    ) : 'Create Environment'}
                   </span>
-                ) : 'Create Environment'}
-              </button>
-            </div>
-          </form>
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </MainLayout>

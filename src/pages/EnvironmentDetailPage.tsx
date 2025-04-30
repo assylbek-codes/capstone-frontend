@@ -208,7 +208,7 @@ export const EnvironmentDetailPage = () => {
                 </div>
                 <div 
                   ref={visualizationContainerRef}
-                  className="border border-gray-700 rounded-md h-96 overflow-hidden bg-gray-900/80"
+                  className="border border-gray-100 rounded-md h-96 overflow-hidden bg-gray-700/70 text-gray-900"
                 >
                   <GridEditor 
                     dimensions={environment.dimensions}

@@ -111,8 +111,10 @@ export const TasksPage = () => {
             </div>
           </div>
           
+
           {/* Scenario filter */}
           <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50 shadow-xl">
+
             <h2 className="text-sm font-medium text-gray-300 mb-2">Filter by Scenario</h2>
             <div className="flex flex-wrap gap-2 mb-4">
               <button
@@ -213,9 +215,9 @@ export const TasksPage = () => {
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                           Type
                         </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                        {/* <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                           Priority
-                        </th>
+                        </th> */}
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                           Scenario
                         </th>
@@ -229,16 +231,16 @@ export const TasksPage = () => {
                         <tr key={task.id} className="hover:bg-gray-800/50 transition-colors">
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm font-medium text-gray-200">{task.name}</div>
-                            <div className="text-sm text-gray-400">{task.description}</div>
+                            {/* <div className="text-sm text-gray-400">{task.description}</div> */}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getTaskTypeBadgeClass(task.task_type)}`}>
                               {getTaskTypeLabel(task.task_type)}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                          {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                             {task.details.priority}
-                          </td>
+                          </td> */}
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                             {getScenarioName(task.scenario_id)}
                           </td>
@@ -246,9 +248,9 @@ export const TasksPage = () => {
                             <Link to={`/tasks/${task.id}`} className="text-blue-400 hover:text-blue-300 transition-colors mr-3">
                               View
                             </Link>
-                            <Link to={`/tasks/${task.id}/edit`} className="text-gray-400 hover:text-gray-300 transition-colors">
+                            {/* <Link to={`/tasks/${task.id}/edit`} className="text-gray-400 hover:text-gray-300 transition-colors">
                               Edit
-                            </Link>
+                            </Link> */}
                           </td>
                         </tr>
                       ))}

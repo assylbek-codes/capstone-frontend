@@ -11,6 +11,11 @@ interface LoginData {
   password: string;
 }
 
+interface VerifyEmailData {
+  email: string;
+  code: string;
+}
+
 interface AuthResponse {
   access_token: string;
   token_type: string;
@@ -53,5 +58,15 @@ export const authService = {
   
   isAuthenticated: () => {
     return !!localStorage.getItem('token');
+  },
+  
+  verifyEmail: async (email: string, code: string) => {
+    const response = await apiClient.post<AuthResponse>('/auth/verify-email', { email, code });
+    return response.data;
+  },
+  
+  resendVerificationCode: async (email: string) => {
+    const response = await apiClient.post('/auth/resend-verification', { email });
+    return response.data;
   }
 }; 

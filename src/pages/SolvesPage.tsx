@@ -228,7 +228,7 @@ export const SolvesPage = () => {
                           Scenario
                         </th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                          Tasks
+                          Task Id
                         </th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                           Date

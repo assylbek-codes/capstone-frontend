@@ -1,51 +1,47 @@
 import { useState, FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 
-export const RegisterPage = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
+export const VerifyEmailPage = () => {
+  const [verificationCode, setVerificationCode] = useState('');
   const [formError, setFormError] = useState('');
-  
-  const { register, error, isLoading } = useAuthStore();
+  const { verifyEmail, error, isLoading } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get email from location state passed from registration page
+  const email = location.state?.email || '';
   
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setFormError('');
     
-    // Form validation
-    if (!username) {
-      setFormError('Username is required');
+    if (!verificationCode) {
+      setFormError('Verification code is required');
       return;
     }
     
-    if (!email) {
-      setFormError('Email is required');
-      return;
-    }
-    
-    if (!password) {
-      setFormError('Password is required');
-      return;
-    }
-    
-    if (password.length < 8) {
-      setFormError('Password must be at least 8 characters');
-      return;
-    }
-    
-    if (password !== passwordConfirm) {
-      setFormError('Passwords do not match');
+    if (verificationCode.length !== 6) {
+      setFormError('Verification code must be 6 digits');
       return;
     }
     
     try {
-      await register(email, username, password);
-      // Redirect to verification page after successful registration
-      navigate('/verify-email', { state: { email } });
+      await verifyEmail(email, verificationCode);
+      // Redirect to login after successful verification
+      navigate('/login', { 
+        state: { message: 'Email verified successfully! Please log in with your account.' } 
+      });
+    } catch (err) {
+      // Error is already handled in the store
+    }
+  };
+  
+  // Handle resend code
+  const handleResendCode = async () => {
+    try {
+      // Use the same email from the state
+      await useAuthStore.getState().resendVerificationCode(email);
     } catch (err) {
       // Error is already handled in the store
     }
@@ -75,68 +71,30 @@ export const RegisterPage = () => {
       <div className="max-w-md w-full space-y-8 bg-gray-900/70 backdrop-blur-md p-8 rounded-xl border border-gray-700/50 shadow-xl z-10 relative">
         <div className="text-center">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-indigo-600 bg-clip-text text-transparent pb-1">Husslify</h1>
-          <h2 className="mt-6 text-2xl font-bold text-white">Create an account</h2>
+          <h2 className="mt-6 text-2xl font-bold text-white">Verify Your Email</h2>
+          <p className="mt-2 text-gray-400">
+            Please enter the 6-digit verification code we sent to:
+            <span className="block mt-1 text-white font-medium">{email}</span>
+          </p>
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md space-y-4">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-1">Username</label>
+              <label htmlFor="code" className="block text-sm font-medium text-gray-300 mb-1">Verification Code</label>
               <input
-                id="username"
-                name="username"
+                id="code"
+                name="code"
                 type="text"
-                autoComplete="username"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={6}
+                autoComplete="one-time-code"
                 required
-                className="w-full px-4 py-2 bg-gray-800/70 border border-gray-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-md text-white placeholder-gray-400 transition-all"
-                placeholder="Choose a username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="w-full px-4 py-2 bg-gray-800/70 border border-gray-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-md text-white placeholder-gray-400 transition-all"
-                placeholder="Your email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="w-full px-4 py-2 bg-gray-800/70 border border-gray-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-md text-white placeholder-gray-400 transition-all"
-                placeholder="Create a password (min. 8 characters)"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="passwordConfirm" className="block text-sm font-medium text-gray-300 mb-1">Confirm Password</label>
-              <input
-                id="passwordConfirm"
-                name="passwordConfirm"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="w-full px-4 py-2 bg-gray-800/70 border border-gray-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-md text-white placeholder-gray-400 transition-all"
-                placeholder="Confirm your password"
-                value={passwordConfirm}
-                onChange={(e) => setPasswordConfirm(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-800/70 border border-gray-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-md text-white placeholder-gray-400 transition-all text-center text-xl letter-spacing-wide"
+                placeholder="123456"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value.replace(/[^0-9]/g, ''))}
               />
             </div>
           </div>
@@ -159,21 +117,22 @@ export const RegisterPage = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Creating account...
+                  Verifying...
                 </span>
               ) : (
-                'Create Account'
+                'Verify Email'
               )}
             </button>
           </div>
           
           <div className="text-center">
-            <p className="text-sm text-gray-400">
-              Already have an account?{' '}
-              <Link to="/login" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
-                Sign in
-              </Link>
-            </p>
+            <button 
+              type="button" 
+              onClick={handleResendCode}
+              className="text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
+            >
+              Didn't receive the code? Resend
+            </button>
           </div>
         </form>
       </div>

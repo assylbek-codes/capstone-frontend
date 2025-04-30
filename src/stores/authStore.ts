@@ -11,6 +11,8 @@ interface AuthState {
   register: (email: string, username: string, password: string) => Promise<void>;
   logout: () => void;
   fetchCurrentUser: () => Promise<void>;
+  verifyEmail: (email: string, code: string) => Promise<void>;
+  resendVerificationCode: (email: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -67,6 +69,32 @@ export const useAuthStore = create<AuthState>((set) => ({
         user: null,
         isAuthenticated: false,
         error: error instanceof Error ? error.message : 'Failed to fetch user', 
+        isLoading: false 
+      });
+    }
+  },
+  
+  verifyEmail: async (email: string, code: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      await authService.verifyEmail(email, code);
+      set({ isLoading: false });
+    } catch (error) {
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to verify email', 
+        isLoading: false 
+      });
+    }
+  },
+  
+  resendVerificationCode: async (email: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      await authService.resendVerificationCode(email);
+      set({ isLoading: false });
+    } catch (error) {
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to resend verification code', 
         isLoading: false 
       });
     }
