@@ -24,14 +24,15 @@ export const useAuthStore = create<AuthState>((set) => ({
   login: async (email: string, password: string) => {
     set({ isLoading: true, error: null });
     try {
-      await authService.login({ username: email, password });
+      const response = await authService.login({ username: email, password });
+      console.log("response", response);
       const user = await authService.getCurrentUser();
       set({ user, isAuthenticated: true, isLoading: false });
     } catch (error) {
       set({ 
         error: error instanceof Error ? error.message : 'Failed to login', 
         isLoading: false,
-        isAuthenticated: false
+        isAuthenticated: false,
       });
     }
   },

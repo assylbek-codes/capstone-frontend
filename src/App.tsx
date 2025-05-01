@@ -6,14 +6,12 @@ import { RegisterPage } from './pages/RegisterPage';
 import { VerifyEmailPage } from './pages/VerifyEmailPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { EnvironmentsPage } from './pages/EnvironmentsPage';
-import { EnvironmentCreatePage } from './pages/EnvironmentCreatePage';
 import { EnvironmentGridEditorPage } from './pages/EnvironmentGridEditorPage';
 import { EnvironmentDetailPage } from './pages/EnvironmentDetailPage';
 import { ScenariosPage } from './pages/ScenariosPage';
 import { ScenarioCreatePage } from './pages/ScenarioCreatePage';
 import { ScenarioDetailPage } from './pages/ScenarioDetailPage';
 import { TasksPage } from './pages/TasksPage';
-import { TaskCreatePage } from './pages/TaskCreatePage';
 import { TaskGeneratePage } from './pages/TaskGeneratePage';
 import { TaskDetailPage } from './pages/TaskDetailPage';
 import { SolvesPage } from './pages/SolvesPage';
@@ -54,12 +52,6 @@ function App() {
           </ProtectedRoute>
         } />
         
-        <Route path="/environments/create" element={
-          <ProtectedRoute>
-            <EnvironmentCreatePage />
-          </ProtectedRoute>
-        } />
-        
         <Route path="/environments/grid-editor" element={
           <ProtectedRoute>
             <EnvironmentGridEditorPage />
@@ -95,12 +87,6 @@ function App() {
         <Route path="/tasks" element={
           <ProtectedRoute>
             <TasksPage />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/tasks/create" element={
-          <ProtectedRoute>
-            <TaskCreatePage />
           </ProtectedRoute>
         } />
         

@@ -116,12 +116,17 @@ export const LoginPage = () => {
               </div>
             </div>
             
-            {(formError || error) && (
+            {(formError || error) === "Request failed with status code 403" ? (
+              <div className="bg-red-900/50 text-red-400 p-3 rounded-md text-sm border border-red-800 hidden">
+                Your session has expired. Please log in again.
+              </div>
+            ) : (formError || error) === "Request failed with status code 400" && (
               <div className="bg-red-900/50 text-red-400 p-3 rounded-md text-sm border border-red-800">
-                {formError || error}
+                Incorrect email or password
               </div>
             )}
-            
+
+
             <div>
               <button
                 type="submit"
