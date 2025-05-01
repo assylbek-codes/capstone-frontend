@@ -32,14 +32,14 @@ export const SolveCreatePage = () => {
   const [rechargeTime, setRechargeTime] = useState(30); // minutes
   
   // Task constraints
-  const [taskPriorities, setTaskPriorities] = useState(false); // Enable priority levels
-  const [timeWindows, setTimeWindows] = useState(false); // Enable time windows
-  const [taskDependencies, setTaskDependencies] = useState(false); // Enable dependencies
+  const [taskPriorities,] = useState(false); // Enable priority levels
+  const [timeWindows,] = useState(false); // Enable time windows
+  const [taskDependencies,] = useState(false); // Enable dependencies
   
   // Environment constraints
-  const [noGoZones, setNoGoZones] = useState(false); // Enable no-go zones
-  const [trafficCongestion, setTrafficCongestion] = useState(false); // Consider traffic
-  const [variableTerrain, setVariableTerrain] = useState(false); // Consider terrain
+  const [noGoZones,] = useState(false); // Enable no-go zones
+  const [trafficCongestion,] = useState(false); // Consider traffic
+  const [variableTerrain,] = useState(false); // Consider terrain
   
   // Multi-objective optimization
   const [objectiveWeights, setObjectiveWeights] = useState({
