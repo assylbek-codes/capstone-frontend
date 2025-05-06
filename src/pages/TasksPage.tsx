@@ -10,7 +10,7 @@ export const TasksPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [selectedTaskType, setSelectedTaskType] = useState<TaskType | 'all'>('all');
+  const [selectedTaskType, ] = useState<TaskType | 'all'>('all');
   
   const scenarioId = searchParams.get('scenario_id');
 

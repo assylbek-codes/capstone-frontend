@@ -17,7 +17,7 @@ export const TaskGeneratePage = () => {
   const [numTasks, setNumTasks] = useState(5);
   const [taskType, setTaskType] = useState<TaskType | ''>('pickup_delivery');
   const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const [description, ] = useState('');
 
   // Fetch scenarios on component mount
   useEffect(() => {

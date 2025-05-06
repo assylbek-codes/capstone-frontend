@@ -321,15 +321,15 @@ export const SolveDetailPage = () => {
                           <p className="text-2xl font-medium text-white">
                             {(() => {
                               // Get all tasks from all robots
-                              const allTasks = Object.values(getResult()).flat() as any[];
+                              // const allTasks = Object.values(getResult()).flat() as any[];
                               
                               // Find the robot with the maximum total distance
-                              const maxDistance = Math.max(
-                                ...Object.values(getResult()).map((robotTasks: any) => {
-                                  const tasks = Array.isArray(robotTasks) ? robotTasks : [];
-                                  return tasks.length > 0 ? tasks[tasks.length - 1].total_distance || 0 : 0;
-                                })
-                              );
+                              // const maxDistance = Math.max(
+                              //   ...Object.values(getResult()).map((robotTasks: any) => {
+                              //     const tasks = Array.isArray(robotTasks) ? robotTasks : [];
+                              //     return tasks.length > 0 ? tasks[tasks.length - 1].total_distance || 0 : 0;
+                              //   })
+                              // );
                               
                               // Calculate combined distance across all robots
                               const totalDistance = Object.values(getResult())

@@ -50,7 +50,7 @@ export const SolveCreatePage = () => {
     cost_efficiency: { enabled: false, weight: 0 }
   });
   
-  const [balanceFactor, setBalanceFactor] = useState(50); // Balance between cost and speed (%)
+  const [balanceFactor, ] = useState(50); // Balance between cost and speed (%)
 
   const AlgorithmsIdMap = {
     'greedy_distance': 1,
@@ -62,13 +62,13 @@ export const SolveCreatePage = () => {
     'marginal_benefit': 7
   }
 
-  const optimizationObjectives = {
-    'completion_time': 'Minimize total completion time',
-    'energy_usage': 'Minimize energy consumption',
-    'distance_traveled': 'Minimize total distance traveled',
-    'balanced_workload': 'Balance workload among robots',
-    'cost_efficiency': 'Optimize for cost efficiency'
-  };
+  // const optimizationObjectives = {
+  //   'completion_time': 'Minimize total completion time',
+  //   'energy_usage': 'Minimize energy consumption',
+  //   'distance_traveled': 'Minimize total distance traveled',
+  //   'balanced_workload': 'Balance workload among robots',
+  //   'cost_efficiency': 'Optimize for cost efficiency'
+  // };
 
   // Helper function to normalize weights to sum to 100
   const normalizeWeights = () => {
@@ -125,31 +125,31 @@ export const SolveCreatePage = () => {
   };
   
   // Handle objective toggle
-  const handleObjectiveToggle = (key: keyof typeof objectiveWeights) => {
-    const newWeights = {
-      ...objectiveWeights,
-      [key]: {
-        ...objectiveWeights[key],
-        enabled: !objectiveWeights[key].enabled
-      }
-    };
+  // const handleObjectiveToggle = (key: keyof typeof objectiveWeights) => {
+  //   const newWeights = {
+  //     ...objectiveWeights,
+  //     [key]: {
+  //       ...objectiveWeights[key],
+  //       enabled: !objectiveWeights[key].enabled
+  //     }
+  //   };
     
-    setObjectiveWeights(newWeights);
+  //   setObjectiveWeights(newWeights);
     
-    // Normalize on next tick to ensure state is updated
-    setTimeout(normalizeWeights, 0);
-  };
+  //   // Normalize on next tick to ensure state is updated
+  //   setTimeout(normalizeWeights, 0);
+  // };
   
-  // Handle weight change
-  const handleWeightChange = (key: keyof typeof objectiveWeights, weight: number) => {
-    setObjectiveWeights({
-      ...objectiveWeights,
-      [key]: {
-        ...objectiveWeights[key],
-        weight
-      }
-    });
-  };
+  // // Handle weight change
+  // const handleWeightChange = (key: keyof typeof objectiveWeights, weight: number) => {
+  //   setObjectiveWeights({
+  //     ...objectiveWeights,
+  //     [key]: {
+  //       ...objectiveWeights[key],
+  //       weight
+  //     }
+  //   });
+  // };
 
   const algorithmRecommendations = {
     'greedy_distance': 'Best for simple point-to-point tasks with low complexity.',

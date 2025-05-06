@@ -512,10 +512,10 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
             const currentTask = tasks[state.currentTaskIndex];
 
             // Get parameters needed for battery calculation
-            const batteryCapacity = currentTask.battery_capacity !== undefined ? 
-              currentTask.battery_capacity : 100;
-            const maxDistance = currentTask.max_distance !== undefined ? 
-              currentTask.max_distance : 1000;
+            // const batteryCapacity = currentTask.battery_capacity !== undefined ? 
+            //   currentTask.battery_capacity : 100;
+            // const maxDistance = currentTask.max_distance !== undefined ? 
+            //   currentTask.max_distance : 1000;
             
             // Check if robot is currently recharging
             if (state.isRecharging) {
@@ -525,7 +525,7 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
               const timeSpentRecharging = metrics.elapsedTime - state.rechargeStartTime;
               
               // For recharge time, DON'T multiply by animation speed to ensure consistent recharge duration
-              const rechargeTimeInSeconds = state.rechargeTimeRemaining;
+              // const rechargeTimeInSeconds = state.rechargeTimeRemaining;
               
               // FIXED: Use a simple ratio test - if elapsed time is less than what it should be, keep recharging
               // This fixes any complexities with time calculation
