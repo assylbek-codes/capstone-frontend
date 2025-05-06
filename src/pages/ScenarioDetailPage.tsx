@@ -301,9 +301,10 @@ export const ScenarioDetailPage = () => {
                       <thead>
                         <tr className="border-b border-gray-700">
                           <th className="py-2 text-left text-gray-300">ID</th>
+                          <th className="py-2 text-left text-gray-300">Name</th>
                           <th className="py-2 text-left text-gray-300">Type</th>
-                          <th className="py-2 text-left text-gray-300">Priority</th>
-                          <th className="py-2 text-left text-gray-300">Created At</th>
+                          {/* <th className="py-2 text-left text-gray-300">Priority</th> */}
+                          {/* <th className="py-2 text-left text-gray-300">Created At</th> */}
                           <th className="py-2 text-left text-gray-300">Actions</th>
                         </tr>
                       </thead>
@@ -311,9 +312,10 @@ export const ScenarioDetailPage = () => {
                         {tasks.slice(0, 5).map(task => (
                           <tr key={task.id} className="border-b border-gray-700 hover:bg-gray-700/30">
                             <td className="py-2">{task.id}</td>
+                            <td className="py-2">{task.name}</td>
                             <td className="py-2">{getTaskTypeLabel(task.task_type)}</td>
-                            <td className="py-2">{task.details?.priority || 'Normal'}</td>
-                            <td className="py-2">{new Date(task.created_at).toLocaleDateString()}</td>
+                            {/* <td className="py-2">{task.details?.priority || 'Normal'}</td> */}
+                            {/* <td className="py-2">{new Date(task.updated_at).toLocaleDateString()}</td> */}
                             <td className="py-2">
                               <Link to={`/tasks/${task.id}`} className="text-blue-400 hover:text-blue-300 transition-colors">
                                 View

@@ -248,7 +248,7 @@ export const EnvironmentDetailPage = () => {
               </div>
               
               {/* Scenarios section */}
-              <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50 shadow-xl">
+              {/* <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50 shadow-xl">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-semibold text-gray-200">Scenarios</h2>
                   <Link to={`/scenarios?environment_id=${id}`} className="text-blue-400 hover:text-blue-300 transition-colors text-sm">
@@ -260,7 +260,7 @@ export const EnvironmentDetailPage = () => {
                     Create New Scenario
                   </Link>
                 </div>
-              </div>
+              </div> */}
             </div>
           ) : (
             <div className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-lg border border-gray-700/50 shadow-xl text-center">

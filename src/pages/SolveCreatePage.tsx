@@ -25,11 +25,11 @@ export const SolveCreatePage = () => {
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
   
   // Robot capabilities
-  const [batteryCapacity, setBatteryCapacity] = useState(100); // %
+  const [batteryCapacity, ] = useState(100); // %
   const [maxDistance, setMaxDistance] = useState(1000); // meters
   const [robotSpeed, setRobotSpeed] = useState(1.0); // m/s
-  const [payloadCapacity, setPayloadCapacity] = useState(10); // kg
-  const [rechargeTime, setRechargeTime] = useState(30); // minutes
+  // const [payloadCapacity, setPayloadCapacity] = useState(10); // kg
+  const [rechargeTime, setRechargeTime] = useState(3); // minutes
   
   // Task constraints
   const [taskPriorities,] = useState(false); // Enable priority levels
@@ -289,18 +289,7 @@ export const SolveCreatePage = () => {
           battery_capacity: batteryCapacity,
           max_distance: maxDistance,
           robot_speed: robotSpeed,
-          payload_capacity: payloadCapacity,
           recharge_time: rechargeTime,
-          
-          // Task constraints
-          enable_task_priorities: taskPriorities,
-          enable_time_windows: timeWindows,
-          enable_task_dependencies: taskDependencies,
-          
-          // Environment constraints
-          enable_no_go_zones: noGoZones,
-          enable_traffic_congestion: trafficCongestion,
-          enable_variable_terrain: variableTerrain,
           
           // Multi-objective optimization weights
           objective_weights: Object.entries(objectiveWeights).reduce((acc, [key, value]) => {
@@ -507,7 +496,7 @@ export const SolveCreatePage = () => {
                       }}
                     >
                       <option value="greedy_distance">Greedy Distance Minimization</option>
-                      <option value="hungarian">Global Optimization with Hungarian Algorithm</option>
+                      {/* <option value="hungarian">Global Optimization with Hungarian Algorithm</option> */}
                       <option value="kmeans">K-Means Inspired Task Clustering</option>
                       <option value="auction">Auction-Based Allocation</option>
                       <option value="genetic">Genetic Algorithm for Assignment</option>
@@ -519,7 +508,7 @@ export const SolveCreatePage = () => {
                     </p>
                   </div>
                   
-                  <div>
+                  {/* <div>
                     <div className="flex justify-between items-center mb-1">
                       <label className="block text-sm font-medium text-gray-300">
                         Multi-Objective Optimization
@@ -568,7 +557,7 @@ export const SolveCreatePage = () => {
                         );
                       })}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               
@@ -592,7 +581,7 @@ export const SolveCreatePage = () => {
                       <h4 className="text-sm font-medium text-blue-300 mb-3">Robot Capabilities</h4>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div>
+                        {/* <div>
                           <label htmlFor="battery-capacity" className="block text-sm font-medium text-gray-300 mb-1">
                             Battery Capacity (%)
                           </label>
@@ -605,7 +594,7 @@ export const SolveCreatePage = () => {
                             value={batteryCapacity}
                             onChange={(e) => setBatteryCapacity(parseInt(e.target.value) || 100)}
                           />
-                        </div>
+                        </div> */}
                         
                         <div>
                           <label htmlFor="max-distance" className="block text-sm font-medium text-gray-300 mb-1">
@@ -638,7 +627,7 @@ export const SolveCreatePage = () => {
                           />
                         </div>
                         
-                        <div>
+                        {/* <div>
                           <label htmlFor="payload-capacity" className="block text-sm font-medium text-gray-300 mb-1">
                             Payload Capacity (kg)
                           </label>
@@ -651,7 +640,7 @@ export const SolveCreatePage = () => {
                             value={payloadCapacity}
                             onChange={(e) => setPayloadCapacity(parseInt(e.target.value) || 10)}
                           />
-                        </div>
+                        </div> */}
                         
                         <div>
                           <label htmlFor="recharge-time" className="block text-sm font-medium text-gray-300 mb-1">
@@ -661,14 +650,14 @@ export const SolveCreatePage = () => {
                             type="number"
                             id="recharge-time"
                             className="w-full bg-gray-900/70 border border-gray-700 rounded-md py-2 px-4 text-white"
-                            min={5}
+                            min={3}
                             max={120}
                             value={rechargeTime}
-                            onChange={(e) => setRechargeTime(parseInt(e.target.value) || 30)}
+                            onChange={(e) => setRechargeTime(parseInt(e.target.value) || 3)}
                           />
                         </div>
                         
-                        <div className="md:col-span-2 lg:col-span-3">
+                        {/* <div className="md:col-span-2 lg:col-span-3">
                           <label htmlFor="balance-factor" className="block text-sm font-medium text-gray-300 mb-1">
                             Energy vs. Speed Balance: {balanceFactor}%
                           </label>
@@ -686,7 +675,7 @@ export const SolveCreatePage = () => {
                             <span>Balanced</span>
                             <span>Fast Completion</span>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     

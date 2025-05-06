@@ -50,6 +50,7 @@ export interface Robot {
   id: string;
   station_id: string;
   position: [number, number];
+  station_index?: number;
 }
 
 export interface EnvironmentElements {
@@ -63,7 +64,7 @@ export interface EnvironmentElements {
 
 export interface GraphNode {
   id: string;
-  type: 'pickup' | 'dropoff' | 'robot' | 'navigation';
+  type: 'pickup' | 'dropoff' | 'robot' | 'navigation' | 'robot_station';
   x: number;
   y: number;
 }

@@ -229,23 +229,28 @@ export const EnvironmentGridEditorPage = () => {
     }));
   }, [selectedPickupIds, allPickupPoints]);
 
-  // Generate individual robots from robot stations and their counts
+  // Improve the generateRobots function to ensure proper robot creation
   const generateRobots = () => {
     const robots: Robot[] = [];
-
+    
     elements.robot_stations.forEach(station => {
       const count = robotCounts[station.id] || 1;
+      console.log(`Creating ${count} robots for station ${station.id}`);
       
       // Create multiple robots for this station based on the count
       for (let i = 0; i < count; i++) {
+        const robotId = `R${station.id.substring(1)}_${i + 1}`; // Format: R{station_number}_{robot_number}
         robots.push({
-          id: `R${station.id.substring(1)}_${i + 1}`, // Format: R{station_number}_{robot_number}
+          id: robotId,
           station_id: station.id,
-          position: [...station.position] as [number, number] // Copy the position from the station
+          position: [...station.position] as [number, number], // Copy the position from the station
+          station_index: i // Add an index to help identify which robot is which at this station
         });
+        console.log(`Created robot ${robotId} for station ${station.id}`);
       }
     });
 
+    console.log(`Total robots created: ${robots.length}`);
     return robots;
   };
 
@@ -261,11 +266,12 @@ export const EnvironmentGridEditorPage = () => {
     const robots = generateRobots();
     
     // Store all nodes for easier iteration
-    const allNodes: {id: string, position: [number, number], type: 'pickup' | 'dropoff' | 'robot' | 'navigation', side?: 'left' | 'right' | 'top' | 'bottom', shelf_id?: string}[] = [
+    const allNodes: {id: string, position: [number, number], type: 'pickup' | 'dropoff' | 'robot' | 'robot_station' | 'navigation', side?: 'left' | 'right' | 'top' | 'bottom', shelf_id?: string}[] = [
       ...elements.pickups.map(p => ({ ...p, type: 'pickup' as const })),
       ...elements.dropoffs.map(d => ({ ...d, type: 'dropoff' as const })),
       ...elements.navigation_points.map(n => ({ ...n, type: 'navigation' as const })),
-      ...robots.map(r => ({ ...r, type: 'robot' as const }))
+      ...robots.map(r => ({ ...r, type: 'robot' as const })),
+      ...elements.robot_stations.map(s => ({ ...s, type: 'robot_station' as const }))
     ];
     
     // Add nodes to the graph
@@ -444,9 +450,19 @@ export const EnvironmentGridEditorPage = () => {
     setShowGraph(prev => !prev);
   };
 
-  // Generate JSON output from the current state
+  // Update the generateJson function to ensure robots are correctly created
   const generateJson = () => {
+    // Generate the graph
     const { graph, robots } = generateGraph();
+    
+    // Log the generated robots to verify multiple robots are created
+    console.log('Generated robots:', robots);
+    
+    // Ensure robot_stations have their robot_count correctly set
+    const stationsWithCounts = elements.robot_stations.map(station => ({
+      ...station,
+      robot_count: robotCounts[station.id] || 1
+    }));
     
     const environmentData = {
       name,
@@ -454,11 +470,8 @@ export const EnvironmentGridEditorPage = () => {
       dimensions,
       elements: {
         ...elements,
-        robots,
-        robot_stations: elements.robot_stations.map(station => ({
-          ...station,
-          robot_count: robotCounts[station.id] || 1 
-        }))
+        robots, // This should be an array of individual robot objects
+        robot_stations: stationsWithCounts
       },
       graph
     };
@@ -500,6 +513,17 @@ export const EnvironmentGridEditorPage = () => {
     
     try {
       const environmentData = generateJson();
+      
+      // Double-check robots are correctly generated
+      const totalRobots = environmentData.elements.robots.length;
+      const totalStations = environmentData.elements.robot_stations.length;
+      console.log(`Submitting environment with ${totalRobots} robots at ${totalStations} stations`);
+      
+      // Log each station and its robot count
+      environmentData.elements.robot_stations.forEach(station => {
+        const stationRobots = environmentData.elements.robots.filter(r => r.station_id === station.id);
+        console.log(`Station ${station.id}: ${stationRobots.length} robots (expected: ${station.robot_count || 1})`);
+      });
       
       // Prepare the request payload with required fields
       const payload = {

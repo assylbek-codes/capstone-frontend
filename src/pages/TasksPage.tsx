@@ -140,8 +140,8 @@ export const TasksPage = () => {
               ))}
             </div>
             
-            <h2 className="text-sm font-medium text-gray-300 mb-2">Filter by Type</h2>
-            <div className="flex flex-wrap gap-2">
+            {/* <h2 className="text-sm font-medium text-gray-300 mb-2">Filter by Type</h2> */}
+            {/* <div className="flex flex-wrap gap-2">
               <button
                 className={`px-3 py-1 rounded-full text-sm ${
                   selectedTaskType === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-700/70 text-gray-300 hover:bg-gray-700 transition-colors'
@@ -174,7 +174,7 @@ export const TasksPage = () => {
               >
                 Pickup & Delivery
               </button>
-            </div>
+            </div> */}
           </div>
           
           {isLoading ? (

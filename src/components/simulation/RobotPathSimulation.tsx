@@ -7,6 +7,8 @@ interface RobotPathSimulationProps {
   initialZoom?: number;
   maxSpeed?: number; // Maximum speed in m/s
   acceleration?: number; // Acceleration in m/s²
+  batteryCapacity?: number; // Battery capacity in percentage
+  maxDistance?: number; // Maximum distance in meters
 }
 
 interface RobotState {
@@ -33,6 +35,12 @@ interface RobotState {
   currentTaskStartTime: number; // Time when current task started
   atPickup: boolean; // Whether robot is at pickup location
   atDropoff: boolean; // Whether robot is at dropoff location
+  // Battery metrics
+  battery_remaining: number; // Battery level remaining in percentage
+  // Recharge state
+  isRecharging: boolean; // Whether robot is currently recharging
+  rechargeTimeRemaining: number; // Time remaining for recharge in seconds
+  rechargeStartTime: number; // When the recharge started (simulation time)
 }
 
 // Add simulation metrics interface
@@ -55,6 +63,8 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
   initialZoom = 1,
   maxSpeed: initialMaxSpeed = 1, // Default max speed: 1 m/s
   acceleration: initialAcceleration = 0.5, // Default acceleration: 0.5 m/s²
+  batteryCapacity = 100, // Default battery capacity: 100%
+  maxDistance = 1000, // Default max distance: 1000m
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,6 +79,10 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
   const [maxSpeed, setMaxSpeed] = useState(initialMaxSpeed);
   const [acceleration, setAcceleration] = useState(initialAcceleration);
   const [debugMode, setDebugMode] = useState(false); // Debug mode toggle
+  
+  // Add state for battery parameters
+  const [currentBatteryCapacity, setCurrentBatteryCapacity] = useState(batteryCapacity);
+  const [currentMaxDistance, setCurrentMaxDistance] = useState(maxDistance);
   
   // Get all robot paths from results
   const robotPaths = Object.entries(results).filter(([key]) => key !== 'stats');
@@ -186,7 +200,11 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
           tasksCompleted: 0,
           currentTaskStartTime: 0,
           atPickup: false,
-          atDropoff: false
+          atDropoff: false,
+          battery_remaining: 100, // Start with full battery
+          isRecharging: false,
+          rechargeTimeRemaining: 0,
+          rechargeStartTime: 0
         };
       }
       
@@ -203,6 +221,32 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
       // Set next node ID to the first node in the path
       const nextNodeId = path.length > 0 ? path[0] : null;
       console.log(`Robot ${robotId} first target node: ${nextNodeId}`);
+      
+      // Get battery parameters from the first task if available, otherwise use defaults
+      const initialBatteryCapacity = firstTask?.battery_capacity !== undefined ? 
+        firstTask.battery_capacity : batteryCapacity;
+      const initialMaxDistance = firstTask?.max_distance !== undefined ? 
+        firstTask.max_distance : maxDistance;
+        
+      // Set the parameters at component level for calculations
+      if (index === 0) {
+        // Only set once to avoid multiple state updates
+        setCurrentBatteryCapacity(initialBatteryCapacity);
+        setCurrentMaxDistance(initialMaxDistance);
+      }
+      
+      // When calculating initial battery, use our function
+      let initialBattery = 100;
+      if (firstTask?.battery_remaining !== undefined) {
+        initialBattery = firstTask.battery_remaining;
+      } else if (firstTask?.total_distance !== undefined) {
+        // If we have distance data but no battery level, calculate it
+        initialBattery = calculateBatteryPercentage(
+          firstTask.total_distance,
+          initialMaxDistance,
+          initialBatteryCapacity
+        );
+      }
       
       return {
         robotId,
@@ -223,7 +267,11 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
         tasksCompleted: 0,
         currentTaskStartTime: 0,
         atPickup: false,
-        atDropoff: false
+        atDropoff: false,
+        battery_remaining: initialBattery,
+        isRecharging: false,
+        rechargeTimeRemaining: 0,
+        rechargeStartTime: 0
       };
     });
     
@@ -332,7 +380,11 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
           tasksCompleted: 0,
           currentTaskStartTime: 0,
           atPickup: false,
-          atDropoff: false
+          atDropoff: false,
+          battery_remaining: 100, // Start with full battery
+          isRecharging: false,
+          rechargeTimeRemaining: 0,
+          rechargeStartTime: 0
         };
       }
       
@@ -348,6 +400,9 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
       
       // Set next node ID to the first node in the path
       const nextNodeId = path.length > 0 ? path[0] : null;
+      
+      // Get initial battery level from the first task, or default to 100%
+      const initialBattery = firstTask?.battery_remaining !== undefined ? firstTask.battery_remaining : 100;
       
       return {
         robotId,
@@ -368,11 +423,56 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
         tasksCompleted: 0,
         currentTaskStartTime: 0,
         atPickup: false,
-        atDropoff: false
+        atDropoff: false,
+        battery_remaining: initialBattery,
+        isRecharging: false,
+        rechargeTimeRemaining: 0,
+        rechargeStartTime: 0
       };
     });
     
     setRobotStates(resetRobotStates);
+  };
+  
+  // Define functions outside the animation loop
+  // Add a function to start recharging
+  const startRecharging = (
+    state: RobotState, 
+    rechargeTask: any, 
+    elapsedTime: number
+  ) => {
+    if (state.isRecharging) return; // Already recharging
+    
+    // Get the final destination position for logging
+    const finalNodeId = state.path[state.path.length - 1];
+    
+    // Start recharging
+    state.isRecharging = true;
+    const rechargeMinutes = rechargeTask.recharge_time || 6; // Default to 6 minutes if not specified
+    
+    // Store the full recharge time in seconds
+    state.rechargeTimeRemaining = rechargeMinutes * 60; // Convert to seconds
+    state.rechargeStartTime = elapsedTime;
+    
+    // Force stop the robot
+    state.currentSpeed = 0;
+    state.isAccelerating = false;
+    state.isDecelerating = false;
+    
+    // Log battery information
+    const currentBattery = state.battery_remaining.toFixed(2);
+    console.log(`Robot ${state.robotId} STARTING RECHARGE at ${finalNodeId}`);
+    console.log(`Current battery: ${currentBattery}% → Will be restored to 100% after recharging`);
+    console.log(`Recharge will take ${rechargeMinutes} minutes (${state.rechargeTimeRemaining}s) at sim time ${elapsedTime.toFixed(1)}s`);
+  };
+  
+  // Add a battery calculation function at the top level of the component
+  const calculateBatteryPercentage = (distanceTraveled: number, maxDistance: number, batteryCapacity: number): number => {
+    if (!maxDistance || maxDistance <= 0) return batteryCapacity;
+    
+    // Linear relationship: battery decreases proportionally to distance traveled
+    const batteryPercentage = batteryCapacity * (1 - (distanceTraveled / maxDistance));
+    return Math.max(0, Math.min(batteryCapacity, batteryPercentage));
   };
   
   // Handle step-by-step animation updates
@@ -404,18 +504,160 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
               continue;
             }
             
-            // If we're at the end of all tasks
+            // Get current task once and use throughout
             if (state.currentTaskIndex >= tasks.length) {
-              continue;
+              continue; // At the end of all tasks
             }
             
-            // Current task and its path
             const currentTask = tasks[state.currentTaskIndex];
+
+            // Get parameters needed for battery calculation
+            const batteryCapacity = currentTask.battery_capacity !== undefined ? 
+              currentTask.battery_capacity : 100;
+            const maxDistance = currentTask.max_distance !== undefined ? 
+              currentTask.max_distance : 1000;
+            
+            // Check if robot is currently recharging
+            if (state.isRecharging) {
+              allPathsCompleted = false; // Keep animation running
+              
+              // Calculate time spent recharging - use actual time, not simulated time
+              const timeSpentRecharging = metrics.elapsedTime - state.rechargeStartTime;
+              
+              // For recharge time, DON'T multiply by animation speed to ensure consistent recharge duration
+              const rechargeTimeInSeconds = state.rechargeTimeRemaining;
+              
+              // FIXED: Use a simple ratio test - if elapsed time is less than what it should be, keep recharging
+              // This fixes any complexities with time calculation
+              const expectedRechargeTimeInSimulation = currentTask.recharge_time * 60; // Convert minutes to seconds
+              const shouldStillBeRecharging = timeSpentRecharging < expectedRechargeTimeInSimulation;
+
+              // Add much more detailed logging for debugging
+              // console.log(`[RECHARGE-DEBUG] Robot ${state.robotId}:
+              //   - Current time: ${metrics.elapsedTime.toFixed(1)}s
+              //   - Recharge start time: ${state.rechargeStartTime.toFixed(1)}s
+              //   - Time spent recharging: ${timeSpentRecharging.toFixed(1)}s
+              //   - Expected recharge duration: ${expectedRechargeTimeInSimulation}s
+              //   - Should still be recharging: ${shouldStillBeRecharging}
+              //   - Animation speed: ${animationSpeed}x
+              // `);
+
+              // If still recharging, update the remaining time and continue
+              if (shouldStillBeRecharging) {
+                // Update remaining time for display purposes - calculate how much time is left
+                const timeRemaining = expectedRechargeTimeInSimulation - timeSpentRecharging;
+                state.rechargeTimeRemaining = Math.max(0, timeRemaining);
+                
+                // Log status more frequently during recharging for debugging
+                if (Math.floor(metrics.elapsedTime) % 2 === 0 && 
+                    Math.floor(metrics.elapsedTime) !== Math.floor(metrics.elapsedTime - deltaTime * animationSpeed)) {
+                  // console.log(`Robot ${state.robotId} still recharging... ${Math.ceil(state.rechargeTimeRemaining)} seconds left, elapsed time: ${metrics.elapsedTime.toFixed(1)}`);
+                }
+                
+                // Make sure the robot doesn't move during recharge
+                state.currentSpeed = 0;
+                allPathsCompleted = false; // Keep animation running
+                
+                continue; // Skip movement update for this robot while recharging
+              } else {
+                // Recharge complete!
+                console.log(`Robot ${state.robotId} FINISHED RECHARGING after ${timeSpentRecharging.toFixed(1)} seconds at simulation time ${metrics.elapsedTime.toFixed(1)}`);
+                state.isRecharging = false;
+                state.rechargeTimeRemaining = 0;
+                
+                // Reset distance traveled counter to 0 when battery is restored to full
+                const previousDistance = state.totalDistance;
+                state.totalDistance = 0;
+                
+                // Update battery to full after recharge completes
+                if (currentTask.battery_remaining !== undefined) {
+                  state.battery_remaining = currentTask.battery_remaining;
+                  console.log(`Robot ${state.robotId} battery restored to ${state.battery_remaining}% after recharge`);
+                }
+                console.log(`Robot ${state.robotId} distance counter reset from ${previousDistance.toFixed(2)}m to 0m`);
+                
+                // Move to next task if available
+                if (state.currentTaskIndex < tasks.length - 1) {
+                  // Move to next task
+                  state.currentTaskIndex++;
+                  state.currentTaskStartTime = metrics.elapsedTime;
+                  
+                  // Get the new task's path
+                  const nextTask = tasks[state.currentTaskIndex];
+                  if (nextTask?.path && Array.isArray(nextTask.path) && nextTask.path.length > 0) {
+                    state.path = nextTask.path;
+                    state.currentPathIndex = 0;
+                    
+                    // Set the first node of the new task as the next target
+                    const firstNodeId = nextTask.path[0];
+                    state.nextNodeId = firstNodeId;
+                    console.log(`Robot ${state.robotId} transitioning to task ${state.currentTaskIndex+1}/${tasks.length}, targeting: ${firstNodeId}`);
+                    
+                    // Update battery level from task data
+                    if (nextTask.battery_remaining !== undefined) {
+                      const oldBattery = state.battery_remaining;
+                      state.battery_remaining = nextTask.battery_remaining;
+                      console.log(`Robot ${state.robotId} battery updated: ${oldBattery.toFixed(2)}% → ${state.battery_remaining.toFixed(2)}%`);
+                    }
+                    
+                    // Check if next task is a recharge task
+                    const isNextRechargeTask = nextTask.task === 'recharge' || nextTask.task === 'recharge_in_place';
+                    if (isNextRechargeTask) {
+                      console.log(`Robot ${state.robotId} preparing for recharge task, battery: ${state.battery_remaining.toFixed(2)}%`);
+                    }
+                    
+                    // Update current task info
+                    if (nextTask.task && Array.isArray(nextTask.task) && nextTask.task.length === 2) {
+                      state.task = {
+                        pickup: nextTask.task[0],
+                        dropoff: nextTask.task[1]
+                      };
+                      
+                      // Always reset pickup/dropoff status for new task
+                      state.atPickup = false;
+                      state.atDropoff = false;
+                      console.log(`Robot ${state.robotId} new pickup-dropoff task: ${nextTask.task[0]} → ${nextTask.task[1]}`);
+                    } else {
+                      // Clear task info if not a standard pickup-dropoff task
+                      if (!isNextRechargeTask) {
+                        state.task = undefined;
+                      }
+                    }
+                  }
+                }
+                
+                continue; // Skip the rest of the loop after handling recharge completion
+              }
+            }
+            
+            // Check if this is a recharge task
+            const isRechargeTask = currentTask.task === 'recharge' || currentTask.task === 'recharge_in_place';
+            
+            // Check if we need to start recharging:
+            // 1. Current task is a recharge task
+            // 2. We've reached the end of the path for this task (final node)
+            // 3. We're not already recharging
+            // 4. Robot has actually arrived at the destination (speed near zero)
+            if (isRechargeTask && 
+                state.currentPathIndex === (state.path.length - 1) && // At the last node index
+                state.nextNodeId === null && // No next node (we've arrived)
+                !state.isRecharging && 
+                state.currentSpeed < 0.1) {
+              
+              startRecharging(state, currentTask, metrics.elapsedTime);
+              continue; // Skip other movement updates while starting recharge
+            }
+            
             if (!currentTask?.path || !Array.isArray(currentTask.path) || currentTask.path.length === 0) {
               continue;
             }
             
-            // Helper function to move to the next node in the path
+            // Add a robust function to detect if a task is a recharge task
+            const isTaskRecharge = (task: any) => {
+              return task && (task.task === 'recharge' || task.task === 'recharge_in_place');
+            };
+            
+            // Update the moveToNextNode function to handle recharge tasks specially
             const moveToNextNode = () => {
               // If we're at first node (index 0), move to next node
               if (state.currentPathIndex === 0) {
@@ -428,6 +670,13 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
                 } else {
                   // End of path
                   state.nextNodeId = null;
+                  
+                  // Check if this is a recharge task - if so, start recharging
+                  const currentTask = tasks[state.currentTaskIndex];
+                  if (isTaskRecharge(currentTask)) {
+                    startRecharging(state, currentTask, metrics.elapsedTime);
+                    return; // Don't proceed to next task yet
+                  }
                 }
               } else {
                 // Move to next node in path
@@ -441,6 +690,13 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
                   // End of current path
                   state.nextNodeId = null;
                   
+                  // Check if this is a recharge task - if so, start recharging
+                  const currentTask = tasks[state.currentTaskIndex];
+                  if (isTaskRecharge(currentTask)) {
+                    startRecharging(state, currentTask, metrics.elapsedTime);
+                    return; // Don't proceed to next task yet
+                  }
+                  
                   // Check if there are more tasks
                   if (state.currentTaskIndex < tasks.length - 1) {
                     // Move to next task
@@ -453,10 +709,15 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
                       state.currentPathIndex = 0;
                       
                       // Set the first node of the new task as the next target
-                      // (Don't teleport to it, move to it)
                       const firstNodeId = nextTask.path[0];
                       state.nextNodeId = firstNodeId;
                       console.log(`Robot ${state.robotId} transitioning to next task, targeting: ${firstNodeId}`);
+                      
+                      // Update battery level from task data
+                      if (nextTask.battery_remaining !== undefined) {
+                        state.battery_remaining = nextTask.battery_remaining;
+                        console.log(`Robot ${state.robotId} battery updated: ${state.battery_remaining}%`);
+                      }
                       
                       // Update current task info
                       if (nextTask.task) {
@@ -465,24 +726,10 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
                           dropoff: nextTask.task[1]
                         };
                         
-                        // Always reset pickup/dropoff status for new task to prevent double counting
-                        // This is especially important if the next task starts at the same location
+                        // Always reset pickup/dropoff status for new task
                         state.atPickup = false;
                         state.atDropoff = false;
-                        
-                        // If the new task's pickup point is the same as our current location
-                        // (which happens when a task ends at a location where the next task begins)
-                        const currentNodeIsNewPickup = state.nextNodeId === state.task.pickup;
-                        if (currentNodeIsNewPickup) {
-                          logTaskStatus(state.robotId, "TRANSITION", `Already at pickup ${state.task.pickup} for new task, but NOT marking as picked up yet to prevent double counting`);
-                          console.log(`Robot ${state.robotId} already at pickup point ${state.task.pickup} for new task`);
-                          // Don't mark as at pickup yet - we'll detect this on the next frame
-                          // This prevents the immediate double-counting scenario
-                        }
                       }
-                      
-                      logTaskStatus(state.robotId, "NEW_TASK", `Starting new task: ${state.task?.pickup} → ${state.task?.dropoff}`);
-                      console.log(`Robot ${state.robotId} starting new task: ${state.task?.pickup} → ${state.task?.dropoff}`);
                     }
                   }
                 }
@@ -663,6 +910,28 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
                 totalDistanceDelta += actualDistance;
                 newRobotDistances[state.robotId] = (newRobotDistances[state.robotId] || 0) + actualDistance;
                 
+                // Dynamically update battery level based on distance traveled, if not recharging
+                if (!state.isRecharging && !isRechargeTask) {
+                  // Use component-level parameters which may have been updated from task data
+                  // Calculate and update battery level in real-time
+                  state.battery_remaining = calculateBatteryPercentage(
+                    state.totalDistance, 
+                    currentMaxDistance, 
+                    currentBatteryCapacity
+                  );
+                  
+                  // Log battery level periodically for debugging (e.g., every 5 seconds)
+                  if (Math.floor(metrics.elapsedTime) % 5 === 0 && 
+                      Math.floor(metrics.elapsedTime) !== Math.floor(metrics.elapsedTime - deltaTime * animationSpeed)) {
+                    console.log(`Robot ${state.robotId} battery: ${state.battery_remaining.toFixed(2)}%, distance: ${state.totalDistance.toFixed(2)}m`);
+                  }
+                  
+                  // Check for low battery
+                  if (state.battery_remaining <= 15) {
+                    console.log(`⚠️ Robot ${state.robotId} LOW BATTERY ALERT: ${state.battery_remaining.toFixed(1)}%`);
+                  }
+                }
+                
                 // Check if we've reached or are very close to the target
                 if (distanceToTarget - actualDistance < 0.01) {
                   // Reached target node, determine if it's a pickup/dropoff
@@ -815,6 +1084,7 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
               }
             });
             
+            // Always update elapsed time - this ensures time continues during recharging
             return {
               elapsedTime: prev.elapsedTime + deltaTime * animationSpeed,
               totalDistance: prev.totalDistance + totalDistanceDelta,
@@ -1038,6 +1308,72 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
         2 * Math.PI
       );
       ctx.fill();
+      
+      // Add battery indicator for low battery
+      if (robot.battery_remaining <= 15 && !robot.isRecharging) {
+        // Flash battery warning for critical battery
+        const now = Date.now();
+        if ((now % 1000) < 500) { // Flash every half second
+          // Draw red battery warning
+          ctx.fillStyle = 'red';
+          const size = 0.2 * Math.min(cellWidth, cellHeight);
+          
+          // Draw battery warning triangle
+          ctx.beginPath();
+          ctx.moveTo(offsetX + x * cellWidth, offsetY + (y - 0.6) * cellHeight - size);
+          ctx.lineTo(offsetX + (x + size) * cellWidth, offsetY + (y - 0.6) * cellHeight + size);
+          ctx.lineTo(offsetX + (x - size) * cellWidth, offsetY + (y - 0.6) * cellHeight + size);
+          ctx.closePath();
+          ctx.fill();
+          
+          // Draw ! inside triangle
+          ctx.fillStyle = 'white';
+          ctx.font = `bold ${Math.max(10 * zoomLevel, 8)}px Arial`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('!', offsetX + x * cellWidth, offsetY + (y - 0.6) * cellHeight);
+        }
+      }
+      
+      // Draw recharge animation if robot is recharging
+      if (robot.isRecharging) {
+        // Draw battery charging animation around the robot
+        const now = Date.now();
+        const flashPhase = (now % 1000) / 1000; // 0 to 1 every second
+        
+        // Only show charging indicator during part of the animation cycle
+        if (flashPhase < 0.7) {
+          // Draw lightning bolt or battery indicator
+          ctx.fillStyle = 'yellow';
+          
+          // Draw battery icon with lightning
+          const size = 0.5 * Math.min(cellWidth, cellHeight);
+          const batteryX = offsetX + x * cellWidth;
+          const batteryY = offsetY + (y - 0.5) * cellHeight;
+          
+          // Draw lightning bolt
+          ctx.beginPath();
+          ctx.moveTo(batteryX, batteryY - size);
+          ctx.lineTo(batteryX + size * 0.5, batteryY);
+          ctx.lineTo(batteryX, batteryY + size * 0.5);
+          ctx.lineTo(batteryX - size * 0.3, batteryY - size * 0.3);
+          ctx.closePath();
+          ctx.fill();
+          
+          // Show recharge time remaining
+          ctx.fillStyle = 'white';
+          ctx.font = `${Math.max(10 * zoomLevel, 8)}px Inter, sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(
+            `${robot.rechargeTimeRemaining > 0 
+              ? `${Math.ceil(robot.rechargeTimeRemaining / 60)}m ${Math.ceil(robot.rechargeTimeRemaining % 60)}s` 
+              : 'Complete'}`,
+            offsetX + x * cellWidth,
+            offsetY + (y + 0.6) * cellHeight
+          );
+        }
+      }
       
       // Draw robot ID
       ctx.fillStyle = 'white';
@@ -1327,12 +1663,38 @@ export const RobotPathSimulation: React.FC<RobotPathSimulationProps> = ({
                 <div className="text-right font-medium">{robot.totalDistance.toFixed(1)}m</div>
                 <div>Current Speed:</div>
                 <div className="text-right font-medium">{robot.currentSpeed.toFixed(1)} m/s</div>
+                <div>Battery Level:</div>
+                <div className="text-right font-medium">
+                  <div className="flex items-center justify-end">
+                    <div className="w-8 h-2 bg-gray-200 rounded-full mr-1">
+                      <div 
+                        className={`h-2 rounded-full ${
+                          robot.battery_remaining > 70 ? 'bg-green-500' : 
+                          robot.battery_remaining > 30 ? 'bg-yellow-500' : 
+                          'bg-red-500'
+                        }`}
+                        style={{ width: `${Math.min(100, Math.max(0, robot.battery_remaining))}%` }}
+                      />
+                    </div>
+                    <span>{robot.battery_remaining.toFixed(1)}%</span>
+                  </div>
+                </div>
                 <div>State:</div>
                 <div className="text-right font-medium">
                   {robot.isAccelerating ? 'Accelerating' : 
                    robot.isDecelerating ? 'Decelerating' : 
+                   robot.isRecharging ? (
+                     <span className="flex items-center justify-end text-purple-500">
+                       Recharging
+                       <span className="ml-1 text-xs bg-purple-100 text-purple-800 px-1 py-0.5 rounded">
+                         {robot.rechargeTimeRemaining > 0 
+                           ? `${Math.ceil(robot.rechargeTimeRemaining / 60)}m ${Math.ceil(robot.rechargeTimeRemaining % 60)}s` 
+                           : 'Complete'}
+                       </span>
+                     </span>
+                   ) : 
                    robot.currentSpeed > 0 ? 'Cruising' : 'Stopped'}
-                  {robot.atDropoff && 
+                  {robot.atDropoff && !robot.isRecharging && 
                     <span className="ml-1 text-xs bg-green-100 text-green-800 px-1 py-0.5 rounded">
                       Completed
                     </span>

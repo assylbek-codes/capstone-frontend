@@ -216,7 +216,7 @@ export const TaskGeneratePage = () => {
                   </p> */}
                 </div>
                 
-                <div>
+                {/* <div>
                   <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-1">
                     Task Description
                   </label>
@@ -227,7 +227,7 @@ export const TaskGeneratePage = () => {
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Common description for the generated tasks"
                   />
-                </div>
+                </div> */}
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>

@@ -230,9 +230,9 @@ export const SolvesPage = () => {
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                           Task Id
                         </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                        {/* <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                           Date
-                        </th>
+                        </th> */}
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                           Actions
                         </th>
@@ -259,9 +259,9 @@ export const SolvesPage = () => {
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                             {solve.task_id || 0}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                          {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                             {new Date(solve.created_at).toLocaleDateString()}
-                          </td>
+                          </td> */}
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <Link to={`/solves/${solve.id}`} className="text-blue-400 hover:text-blue-300 transition-colors">
                               View Results
