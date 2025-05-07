@@ -604,7 +604,7 @@ export const SolveCreatePage = () => {
                             type="number"
                             id="max-distance"
                             className="w-full bg-gray-900/70 border border-gray-700 rounded-md py-2 px-4 text-white"
-                            min={100}
+                            min={0}
                             max={10000}
                             value={maxDistance}
                             onChange={(e) => setMaxDistance(parseInt(e.target.value) || 1000)}

@@ -129,7 +129,7 @@ export const LandingPage = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
               {
                 icon: (
@@ -150,7 +150,7 @@ export const LandingPage = () => {
                   </svg>
                 ),
                 title: "Scenario Simulation",
-                description: "Test different robot quantities, types, and configurations to find your optimal setup"
+                description: "Test different robot speeds, battery capacities, and configurations to find your optimal setup"
               },
               {
                 icon: (
@@ -170,30 +170,30 @@ export const LandingPage = () => {
                     <path d="M21 17.59A9 9 0 0 1 11 22a9 9 0 0 1 0-18" />
                   </svg>
                 ),
-                title: "Algorithm Benchmarking",
-                description: "Compare multiple robot routing and task allocation algorithms to identify the best for your specific needs"
+                title: "Algorithm Choosing",
+                description: "Choose from multiple robot routing and task allocation algorithms to identify the best for your specific needs"
               },
-              {
-                icon: (
-                  <svg className="w-10 h-10 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
-                    <path d="M12 8v4M12 16h.01" />
-                  </svg>
-                ),
-                title: "Parameter Optimization",
-                description: "Fine-tune system parameters in simulation to achieve maximum efficiency before real deployment"
-              },
-              {
-                icon: (
-                  <svg className="w-10 h-10 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M7 12h10M7 5h10M7 19h10" />
-                    <path d="M3 5h1v1H3zM3 12h1v1H3zM3 19h1v1H3z" />
-                    <path d="M17 5h4v1h-4zM17 12h4v1h-4zM17 19h4v1h-4z" />
-                  </svg>
-                ),
-                title: "Cost Analysis Tools",
-                description: "Estimate operational costs and ROI of different robot configurations before investing in hardware"
-              },
+              // {
+              //   icon: (
+              //     <svg className="w-10 h-10 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              //       <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
+              //       <path d="M12 8v4M12 16h.01" />
+              //     </svg>
+              //   ),
+              //   title: "Parameter Optimization",
+              //   description: "Fine-tune system parameters in simulation to achieve maximum efficiency before real deployment"
+              // },
+              // {
+              //   icon: (
+              //     <svg className="w-10 h-10 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              //       <path d="M7 12h10M7 5h10M7 19h10" />
+              //       <path d="M3 5h1v1H3zM3 12h1v1H3zM3 19h1v1H3z" />
+              //       <path d="M17 5h4v1h-4zM17 12h4v1h-4zM17 19h4v1h-4z" />
+              //     </svg>
+              //   ),
+              //   title: "Cost Analysis Tools",
+              //   description: "Estimate operational costs and ROI of different robot configurations before investing in hardware"
+              // },
             ].map((feature, index) => (
               <div key={index} className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-blue-500/50 transition-colors group">
                 <div className="mb-4 p-3 bg-gray-900 rounded-lg inline-block group-hover:bg-blue-900/20 transition-colors">{feature.icon}</div>
